@@ -5,7 +5,9 @@ ANSI = @regex::new(r"(\u{1b})(\[([0-9;]*m)+)")
 type @dye
 impl @dye {
 
-    FORE: #[desc("The foreground colour of the text"), example(u"@dye::FORE.RED | @dye::FORE.LIGHT_RED")]
+    FORE: #[desc("The foreground colour of the text"), example(u"
+    @dye::FORE.RED | @dye::FORE.LIGHT_RED
+    ")]
     {
         BLACK: "\u{1b}[30m",
         RED: "\u{1b}[31m",
@@ -26,7 +28,9 @@ impl @dye {
         LIGHT_WHITE: "\u{1b}[97m",
     },
 
-    BACK: #[desc("The background colour of the text"), example(u"@dye::BACK.RED | @dye::BACK.LIGHT_RED")]
+    BACK: #[desc("The background colour of the text"), example(u"
+    @dye::BACK.RED | @dye::BACK.LIGHT_RED
+    ")]
     {
         BLACK: "\u{1b}[40m",
         RED: "\u{1b}[41m",
@@ -49,7 +53,8 @@ impl @dye {
         DEFAULT: "\u{1b}[49m",
     },
 
-    STYLE: #[desc("The style colour of the text (bold, italic, etc.), Note: Depending on your system and terminal, these may not style the text, but rather do things like change the colour") example(u"@dye::STYLE.BOLD")]
+    STYLE: #[desc("The style colour of the text (bold, italic, etc.), Note: Depending on your system and terminal, these may not style the text, but rather do things like change the colour") example(u"
+    @dye::STYLE.BOLD")]
     {
         BOLD: "\u{1b}[1m",
         ITALIC: "\u{1b}[3m",
@@ -58,7 +63,9 @@ impl @dye {
         STRIKE: "\u{1b}[9m",
     },
 
-    RESET: #[desc("Resets the string colours for the next string"), example(u"@dye::RESET")] "\u{1b}[0m",
+    RESET: #[desc("Resets the string colours for the next string"), example(u"
+    @dye::RESET"
+    )] "\u{1b}[0m",
 
     dye: #[constructor, desc("Creates a new dyed string given a string, foreground, background and style"), example(u"
 let string = @dye::dye(\"I am a dyed string\", fore=@dye::FORE.MAGENTA, back=@dye::BACK.BLACK, styles=@dye::STYLE.ITALIC)
@@ -78,7 +85,8 @@ let string = @dye::dye(\"I am a dyed string\", fore=@dye::FORE.MAGENTA, back=@dy
         return @dye::new(beg + string + @dye::RESET)
     },
 
-    new: #[constructor, desc("Creates a blank dyed string"), example(u"let string = @dye::new(string=\"Some string\")")]
+    new: #[constructor, desc("Creates a blank dyed string"), example(u"
+    let string = @dye::new(string=\"Some string\")")]
     (string: @string="") -> @dye {
         let slf = @dye::{
             str: string,
@@ -89,7 +97,8 @@ let string = @dye::dye(\"I am a dyed string\", fore=@dye::FORE.MAGENTA, back=@dy
         return slf
     },
     
-    append: #[desc("Adds a string to the current string"), example(u"string.append(@dye::dye(...))")]
+    append: #[desc("Adds a string to the current string"), example(u"
+    string.append(@dye::dye(...))")]
     (self, string: @dye|@string) -> @dye {
         let string = string
         if self is @dye {
@@ -103,7 +112,8 @@ let string = @dye::dye(\"I am a dyed string\", fore=@dye::FORE.MAGENTA, back=@dy
         return self
     },
 
-    join: #[desc("Appends a string to the current string, separated by a delimiter"), example(u"string.join(\"string\", delim=\",\")")]
+    join: #[desc("Appends a string to the current string, separated by a delimiter"), example(u"
+    string.join(\"string\", delim=\",\")")]
     (self, string, delim=" ") -> @dye {
         self.str = self.str + delim
         self.append(string)
@@ -111,12 +121,14 @@ let string = @dye::dye(\"I am a dyed string\", fore=@dye::FORE.MAGENTA, back=@dy
 		return self
     },
 
-    repeat: #[desc("Repeats the current string `times` times"), example(u"let rep = string.repeat(2)")]
+    repeat: #[desc("Repeats the current string `times` times"), example(u"
+    let rep = string.repeat(2)")]
     (self, times) -> @dye {
         return @dye::new(self.str * times)
     },
 
-    add_styles: #[desc("Adds a style to the current string"), example(u"string.add_styles(@dye::STYLE.BOLD)")]
+    add_styles: #[desc("Adds a style to the current string"), example(u"
+    string.add_styles(@dye::STYLE.BOLD)")]
     (self, styles) -> @dye {
 		let style = style
         if !(style is @array) {
@@ -131,7 +143,8 @@ let string = @dye::dye(\"I am a dyed string\", fore=@dye::FORE.MAGENTA, back=@dy
 
         return self
     },
-    remove_styles: #[desc("Removes a style from the current string"), example(u"string.remove_styles(@dye::STYLE.BOLD)")]
+    remove_styles: #[desc("Removes a style from the current string"), example(u"
+    string.remove_styles(@dye::STYLE.BOLD)")]
     (self, styles) -> @dye {
         let style = style
         if !(style is @array) {
@@ -147,17 +160,20 @@ let string = @dye::dye(\"I am a dyed string\", fore=@dye::FORE.MAGENTA, back=@dy
         return self
     },
 
-    printable: #[desc("Returns the printable version of the current string"), example(u"string.printable()")]
+    printable: #[desc("Returns the printable version of the current string"), example(u"
+    string.printable()")]
     (self) -> @string {
         return self.str
     },
 
-    strip: #[desc("Strips all the colours and styles from the current string and returns the cleaned string"), example(u"string.strip()")]
+    strip: #[desc("Strips all the colours and styles from the current string and returns the cleaned string"), example(u"
+    string.strip()")]
     (self) -> @string {
         return ANSI.replace(self.str, "")
     },
 
-    escape: #[desc("Returns the escaped version current string (will literally print \\u{1b}...)"), example(u"string.escape()")]
+    escape: #[desc("Returns the escaped version current string (will literally print \\u{1b}...)"), example(u"
+    string.escape()")]
     (self) -> @string {
         return self.str.replace("", "\\u{1b}")
     },
